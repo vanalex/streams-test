@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -37,8 +39,15 @@ public class StreamexTest {
         assertThat(asList("a", "a", "a", "a")).isEqualTo(StreamEx.generate(() -> "a").limit(4).toList());
         assertThat(asList("a", "a", "a", "a")).isEqualTo( StreamEx.constant("a", 4).toList());
         assertThat(asList("c", "d", "e")).isEqualTo(StreamEx.of("abcdef".split(""), 2, 5).toList());
-
-
+        assertThat(asList("a1", "b2", "c3")).isEqualTo(StreamEx.zip(asList("a", "b", "c"), asList(1, 2, 3), (s, i) -> s + i).toList());
+        assertThat(asList("a1", "b2", "c3")).isEqualTo(StreamEx.zip(new String[]{"a", "b", "c"}, new Integer[]{1, 2, 3}, (s, i) -> s + i).toList());
+        assertThat(asList("a", "b")).isEqualTo(StreamEx.of(asList("a", "b").spliterator()).toList());
+        assertThat(asList("a", "b")).isEqualTo(StreamEx.of(asList("a", "b").iterator()).toList());
+        assertThat(asList()).isEqualTo(StreamEx.of(Collections.emptyIterator()).toList());
+        assertThat(asList()).isEqualTo(StreamEx.of(Collections.emptyIterator()).parallel().toList());
+        assertThat(asList("a", "b")).isEqualTo(StreamEx.of(new Vector<>(asList("a", "b")).elements()).toList());
+        assertThat(asList("a", "b", "c", "d")).isEqualTo(StreamEx.ofReversed(asList("d", "c", "b", "a")).toList());
+        assertThat(asList("a", "b", "c", "d")).isEqualTo(StreamEx.ofReversed(new String[]{"d", "c", "b", "a"}).toList());
     }
 
     private static Reader getReader() {
