@@ -53,4 +53,10 @@ public class StreamexTest {
     private static Reader getReader() {
         return new BufferedReader(new StringReader("a\nb"));
     }
+
+    @Test
+    public void testBasics() {
+        assertThat(StreamEx.of("a").isParallel()).isFalse();
+        assertThat(StreamEx.of("a").parallel().isParallel()).isTrue();
+    }
 }
