@@ -9,11 +9,13 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StreamexTest {
 
@@ -58,5 +60,10 @@ public class StreamexTest {
     public void testBasics() {
         assertThat(StreamEx.of("a").isParallel()).isFalse();
         assertThat(StreamEx.of("a").parallel().isParallel()).isTrue();
+        assertThat(StreamEx.of("a").parallel().sequential().isParallel()).isFalse();
+        AtomicInteger i = new AtomicInteger();
+        try (Stream<String> s = StreamEx.of("a").onClose(i::incrementAndGet)) {
+            assertThat(1).isEqualTo(s.count());
+        }
     }
 }
