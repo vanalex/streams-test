@@ -65,5 +65,8 @@ public class StreamexTest {
         try (Stream<String> s = StreamEx.of("a").onClose(i::incrementAndGet)) {
             assertThat(1).isEqualTo(s.count());
         }
+
+        assertThat(asList(1, 2)).isEqualTo(StreamEx.of("a", "bb").map(String::length).toList());
+        assertThat(StreamEx.empty().findAny().isPresent()).isFalse();
     }
 }
