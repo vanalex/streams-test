@@ -68,5 +68,11 @@ public class StreamexTest {
 
         assertThat(asList(1, 2)).isEqualTo(StreamEx.of("a", "bb").map(String::length).toList());
         assertThat(StreamEx.empty().findAny().isPresent()).isFalse();
+
+        assertThat("a").isEqualTo(StreamEx.of("a").findAny().get());
+        assertThat(StreamEx.empty().findFirst().isPresent()).isFalse();
+        assertThat("a").isEqualTo(StreamEx.of("a", "b").findFirst().get());
+        assertThat(asList("b", "c")).isEqualTo(StreamEx.of("a", "b", "c").skip(1).toList());
+
     }
 }
