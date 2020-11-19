@@ -74,5 +74,16 @@ public class StreamexTest {
         assertThat("a").isEqualTo(StreamEx.of("a", "b").findFirst().get());
         assertThat(asList("b", "c")).isEqualTo(StreamEx.of("a", "b", "c").skip(1).toList());
 
+        assertThat(StreamEx.of("a", "b").anyMatch("a"::equals)).isTrue();
+        assertThat(StreamEx.of("a", "b").anyMatch("c"::equals)).isFalse();
+        assertThat(StreamEx.of("a", "b").allMatch("a"::equals)).isFalse();
+        assertThat(StreamEx.of("a", "b").allMatch("c"::equals)).isFalse();
+        assertThat(StreamEx.of("a", "b").noneMatch("a"::equals)).isFalse();
+        assertThat(StreamEx.of("a", "b").noneMatch("c"::equals)).isTrue();
+        assertThat(StreamEx.of().noneMatch("a"::equals)).isTrue();
+        assertThat(StreamEx.of().allMatch("a"::equals)).isTrue();
+        assertThat(StreamEx.of().anyMatch("a"::equals)).isFalse();
+
+
     }
 }
