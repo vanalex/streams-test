@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Spliterator;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -84,6 +85,14 @@ public class StreamexTest {
         assertThat(StreamEx.of().allMatch("a"::equals)).isTrue();
         assertThat(StreamEx.of().anyMatch("a"::equals)).isFalse();
 
+        assertThat("abbccc").isEqualTo( StreamEx.of("a", "bb", "ccc").collect(StringBuilder::new, StringBuilder::append,
+                StringBuilder::append).toString());
+        assertThat(new String[] { "a", "b", "c" }).isEqualTo(StreamEx.of("a", "b", "c").toArray(String[]::new));
+        assertThat(new Object[] { "a", "b", "c" }).isEqualTo(StreamEx.of("a", "b", "c").toArray());
+        assertThat(3).isEqualTo(StreamEx.of("a", "b", "c").spliterator().getExactSizeIfKnown());
+
+        assertThat(StreamEx.of("a", "b", "c").spliterator().hasCharacteristics(Spliterator.ORDERED)).isTrue();
+        assertThat(StreamEx.of("a", "b", "c").unordered().spliterator().hasCharacteristics(Spliterator.ORDERED)).isFalse();
 
     }
 }
