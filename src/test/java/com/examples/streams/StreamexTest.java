@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -93,6 +90,17 @@ public class StreamexTest {
 
         assertThat(StreamEx.of("a", "b", "c").spliterator().hasCharacteristics(Spliterator.ORDERED)).isTrue();
         assertThat(StreamEx.of("a", "b", "c").unordered().spliterator().hasCharacteristics(Spliterator.ORDERED)).isFalse();
-
     }
+
+    @Test
+    public void testCovariance() {
+        StreamEx<Number> stream = StreamEx.of(1, 2, 3);
+        List<Number> list = stream.toList();
+        assertThat(asList(1, 2, 3)).isEqualTo(list);
+
+        StreamEx<Object> objStream = StreamEx.of(list.spliterator());
+        List<Object> objList = objStream.toList();
+        assertThat(asList(1, 2, 3)).isEqualTo(objList);
+    }
+
 }
