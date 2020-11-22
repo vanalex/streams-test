@@ -103,4 +103,14 @@ public class StreamexTest {
         assertThat(asList(1, 2, 3)).isEqualTo(objList);
     }
 
+    @Test
+    public void testToList() {
+        List<Integer> list = StreamEx.of(1, 2, 3).toList();
+        // Test that returned list is mutable
+        List<Integer> list2 = StreamEx.of(4, 5, 6).parallel().toList();
+        list2.add(7);
+        list.addAll(list2);
+        assertThat(asList(1, 2, 3, 4, 5, 6, 7)).isEqualTo(list);
+    }
+
 }
