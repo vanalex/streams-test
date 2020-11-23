@@ -113,4 +113,16 @@ public class StreamexTest {
         assertThat(asList(1, 2, 3, 4, 5, 6, 7)).isEqualTo(list);
     }
 
+    @Test
+    public void testToArray() {
+        Number[] numbers = StreamEx.of(1, 2, 3).toArray(Number.class);
+        assertThat(new Number[] { 1, 2, 3 }).isEqualTo(numbers);
+        assertThat(Number.class).isEqualTo(numbers.getClass().getComponentType());
+        Integer[] emptyArray = {};
+        assertThat(emptyArray).isEqualTo(StreamEx.of(1, 2, 3).filter(x -> x > 3).toArray(emptyArray));
+        assertThat(new Integer[] { 1, 2, 3 }).isEqualTo(StreamEx.of(1, 2, 3).remove(x -> x > 3).toArray(emptyArray));
+        assertThatThrownBy(() -> StreamEx.of().toArray(new Integer[1])).isInstanceOf(IllegalArgumentException.class);
+    }
+
+
 }
