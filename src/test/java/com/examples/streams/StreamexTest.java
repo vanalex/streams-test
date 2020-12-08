@@ -124,5 +124,14 @@ public class StreamexTest {
         assertThatThrownBy(() -> StreamEx.of().toArray(new Integer[1])).isInstanceOf(IllegalArgumentException.class);
     }
 
-
+    @Test
+    public void testForEach() {
+        List<Integer> list = new ArrayList<>();
+        StreamEx.of(1, 2, 3).forEach(list::add);
+        assertThat(asList(1, 2, 3)).isEqualTo( list);
+        StreamEx.of(1, 2, 3).forEachOrdered(list::add);
+        assertThat(asList(1, 2, 3, 1, 2, 3)).isEqualTo( list);
+        StreamEx.of(1, 2, 3).parallel().forEachOrdered(list::add);
+        assertThat(asList(1, 2, 3, 1, 2, 3, 1, 2, 3)).isEqualTo(list);
+    }
 }
