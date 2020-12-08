@@ -134,4 +134,15 @@ public class StreamexTest {
         StreamEx.of(1, 2, 3).parallel().forEachOrdered(list::add);
         assertThat(asList(1, 2, 3, 1, 2, 3, 1, 2, 3)).isEqualTo(list);
     }
+
+    @Test
+    public void testFlatMap() {
+        assertThat(new int[] { 0, 0, 1, 0, 0, 1, 0, 0 }).isEqualTo(StreamEx.of("111", "222", "333").flatMapToInt(s -> s
+                .chars().map(ch -> ch - '0')).pairMap((a, b) -> b - a).toArray());
+        assertThat(new long[] { 0, 0, 1, 0, 0, 1, 0, 0 }).isEqualTo(StreamEx.of("111", "222", "333").flatMapToLong(s -> s
+                .chars().mapToLong(ch -> ch - '0')).pairMap((a, b) -> b - a).toArray());
+        assertThat(new double[] { 0, 0, 1, 0, 0, 1, 0, 0 }).isEqualTo(StreamEx.of("111", "222", "333").flatMapToDouble(
+                s -> s.chars().mapToDouble(ch -> ch - '0')).pairMap((a, b) -> b - a).toArray());
+
+    }
 }
