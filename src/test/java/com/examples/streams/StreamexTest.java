@@ -145,4 +145,19 @@ public class StreamexTest {
                 s -> s.chars().mapToDouble(ch -> ch - '0')).pairMap((a, b) -> b - a).toArray());
 
     }
+
+    @Test
+    public void testAndThen() {
+        HashSet<String> set = StreamEx.of("a", "bb", "ccc").toListAndThen(HashSet::new);
+        assertThat(3).isEqualTo(set.size());
+        assertThat(set.contains("bb")).isTrue();
+
+        ArrayList<String> list = StreamEx.of("a", "bb", "ccc").toSetAndThen(ArrayList::new);
+        assertThat(3).isEqualTo(list.size());
+        assertThat(list.contains("bb")).isTrue();
+
+        ArrayList<String> linkedHashSet = StreamEx.of("a", "bb", "ccc", "a", "d", "bb", "e")
+                .toCollectionAndThen(LinkedHashSet::new, ArrayList::new);
+        assertThat(asList("a", "bb", "ccc", "d", "e")).isEqualTo(linkedHashSet);
+    }
 }
