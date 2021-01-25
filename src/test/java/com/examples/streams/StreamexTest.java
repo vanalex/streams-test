@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -159,5 +160,21 @@ public class StreamexTest {
         ArrayList<String> linkedHashSet = StreamEx.of("a", "bb", "ccc", "a", "d", "bb", "e")
                 .toCollectionAndThen(LinkedHashSet::new, ArrayList::new);
         assertThat(asList("a", "bb", "ccc", "d", "e")).isEqualTo(linkedHashSet);
+    }
+
+    @Test
+    public void testPartitioning() {
+        Map<Boolean, List<String>> map = StreamEx.of("a", "bb", "c", "dd").partitioningBy(s -> s.length() > 1);
+        assertThat(asList("bb", "dd")).isEqualTo( map.get(true));
+        assertThat(asList("a", "c")).isEqualTo(map.get(false));
+        Map<Boolean, Long> counts = StreamEx.of("a", "bb", "c", "dd", "eee").partitioningBy(s -> s.length() > 1,
+                Collectors.counting());
+        assertThat(3L).isEqualTo( (long) counts.get(true));
+        assertThat(2L).isEqualTo((long) counts.get(false));
+        Map<Boolean, List<String>> mapLinked = StreamEx.of("a", "bb", "c", "dd").partitioningTo(s -> s.length() > 1,
+                LinkedList::new);
+        assertThat(asList("bb", "dd")).isEqualTo( mapLinked.get(true));
+        assertThat(asList("a", "c")).isEqualTo( mapLinked.get(false));
+        assertThat(mapLinked.get(true) instanceof LinkedList).isTrue();
     }
 }
