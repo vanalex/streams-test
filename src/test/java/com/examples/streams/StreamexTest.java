@@ -177,4 +177,13 @@ public class StreamexTest {
         assertThat(asList("a", "c")).isEqualTo( mapLinked.get(false));
         assertThat(mapLinked.get(true) instanceof LinkedList).isTrue();
     }
+
+    @Test
+    public void testIterable() {
+        List<String> result = new ArrayList<>();
+        for (String s : StreamEx.of("a", "b", "cc").filter(s -> s.length() < 2)) {
+            result.add(s);
+        }
+        assertThat(asList("a", "b")).isEqualTo(result);
+    }
 }
