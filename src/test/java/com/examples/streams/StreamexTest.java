@@ -3,9 +3,7 @@ package com.examples.streams;
 import one.util.streamex.StreamEx;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -188,15 +186,6 @@ public class StreamexTest {
     }
 
     @Test
-    public void testIterable() {
-        List<String> result = new ArrayList<>();
-        for (String s : StreamEx.of("a", "b", "cc").filter(s -> s.length() < 2)) {
-            result.add(s);
-        }
-        assertThat(asList("a", "b")).isEqualTo(result);
-    }
-
-    @Test
     public void testCreateFromMap() {
         Map<String, Integer> data = new LinkedHashMap<>();
         data.put("aaa", 10);
@@ -207,4 +196,22 @@ public class StreamexTest {
         assertThat(asList(10, 25, 37)).isEqualTo(StreamEx.ofValues(data).toList());
         assertThat(asList(10, 25)).isEqualTo(StreamEx.ofValues(data, s -> s.length() > 1).toList());
     }
+
+    @Test
+    public void testSelect() {
+        assertThat(asList("a", "b")).isEqualTo(StreamEx.of(1, "a", 2, "b", 3, "cc").select(String.class).filter(s -> s
+                .length() == 1).toList());
+        StringBuilder sb = new StringBuilder();
+        StringBuffer sbb = new StringBuffer();
+        StreamEx.<CharSequence>of("test", sb, sbb).select(Appendable.class).forEach(a -> {
+            try {
+                a.append("b");
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
+        assertThat("b").isEqualTo(sb.toString());
+        assertThat("b").isEqualTo(sbb.toString());
+    }
+
 }
