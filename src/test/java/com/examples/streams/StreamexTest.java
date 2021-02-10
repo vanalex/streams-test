@@ -214,4 +214,21 @@ public class StreamexTest {
         assertThat("b").isEqualTo(sbb.toString());
     }
 
+    @Test
+    public void testFlatCollection() {
+        Map<Integer, List<String>> data = new LinkedHashMap<>();
+        data.put(1, asList("a", "b"));
+        data.put(2, asList("c", "d"));
+        data.put(3, null);
+        assertThat(asList("a", "b", "c", "d")).isEqualTo(StreamEx.of(data.entrySet()).flatCollection(Map.Entry::getValue).toList());
+    }
+
+    @Test
+    public void testFlatArray() {
+        Map<Integer, String[]> data = new LinkedHashMap<>();
+        data.put(1, new String[] {"a", "b"});
+        data.put(2, new String[] {"c", "d"});
+        data.put(3, null);
+        assertThat(asList("a", "b", "c", "d")).isEqualTo(StreamEx.of(data.entrySet()).flatArray(Map.Entry::getValue).toList());
+    }
 }
