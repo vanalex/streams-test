@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,6 +15,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 
 public class StreamexTest {
 
@@ -230,5 +233,24 @@ public class StreamexTest {
         data.put(2, new String[] {"c", "d"});
         data.put(3, null);
         assertThat(asList("a", "b", "c", "d")).isEqualTo(StreamEx.of(data.entrySet()).flatArray(Map.Entry::getValue).toList());
+    }
+
+    @Test
+    public void testAppend() {
+        assertThat(asList("a", "b", "c", "d", "e")).isEqualTo( StreamEx.of("a", "b", "c", "dd").remove(s -> s.length() > 1)
+                .append("d", "e").toList());
+        assertThat(asList("a", "b", "c", "d", "e")).isEqualTo( StreamEx.of("a", "b", "c").append(Stream.of("d", "e"))
+                .toList());
+        assertThat(asList("a", "b", "c", "d", "e")).isEqualTo( StreamEx.of("a", "b", "c").append(asList("d", "e")).toList());
+
+        List<Integer> list = asList(1, 2, 3, 4);
+        assertThat(asList(1.0, 2, 3L, 1, 2, 3, 4)).isEqualTo( StreamEx.of(1.0, 2, 3L).append(list).toList());
+
+        StreamEx<Integer> s = StreamEx.of(1, 2, 3);
+        assertSame(s, s.append());
+        assertSame(s, s.append(Collections.emptyList()));
+        assertSame(s, s.append(new ArrayList<>()));
+        assertSame(s, s.append(Stream.empty()));
+        assertNotSame(s, s.append(new ConcurrentLinkedQueue<>()));
     }
 }
