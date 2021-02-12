@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -253,4 +254,29 @@ public class StreamexTest {
         assertSame(s, s.append(Stream.empty()));
         assertNotSame(s, s.append(new ConcurrentLinkedQueue<>()));
     }
+
+    @Test
+    public void testNonNull() {
+        List<String> data = asList("a", null, "b");
+        assertThat(asList("a", null, "b")).isEqualTo( StreamEx.of(data).toList());
+        assertThat(asList("a", "b")).isEqualTo( StreamEx.of(data).nonNull().toList());
+    }
+
+    @Test
+    public void testSorting() {
+        assertThat(asList("a", "b", "c", "d")).isEqualTo( StreamEx.of("b", "c", "a", "d").sorted().toList());
+        assertThat(asList("d", "c", "b", "a")).isEqualTo( StreamEx.of("b", "c", "a", "d").reverseSorted().toList());
+
+        List<String> data = asList("a", "bbb", "cc");
+        assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sorted(Comparator.comparingInt(String::length))
+                .toList());
+        assertThat(asList("bbb", "cc", "a")).isEqualTo( StreamEx.of(data).reverseSorted(Comparator.comparingInt(String::length))
+                .toList());
+        assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sortedByInt(String::length).toList());
+        assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sortedByLong(String::length).toList());
+        assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sortedByDouble(String::length).toList());
+        assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sortedBy(String::length).toList());
+    }
+
+
 }
