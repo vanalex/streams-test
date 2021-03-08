@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -278,5 +279,18 @@ public class StreamexTest {
         assertThat(asList("a", "cc", "bbb")).isEqualTo( StreamEx.of(data).sortedBy(String::length).toList());
     }
 
+    @Test
+    public void testFind() {
+        assertThat("bb").isEqualTo(StreamEx.of("a", "bb", "c").findFirst(s -> s.length() == 2).get());
+        assertThat(StreamEx.of("a", "bb", "c").findFirst(s -> s.length() == 3).isPresent()).isTrue();
+    }
+
+    @Test
+    public void testHas() {
+        assertTrue(StreamEx.of("a", "bb", "c").has("bb"));
+        assertFalse(StreamEx.of("a", "bb", "c").has("cc"));
+        assertFalse(StreamEx.of("a", "bb", "c").has(null));
+        assertTrue(StreamEx.of("a", "bb", null, "c").has(null));
+    }
 
 }
