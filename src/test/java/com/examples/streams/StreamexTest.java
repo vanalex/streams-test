@@ -282,7 +282,7 @@ public class StreamexTest {
     @Test
     public void testFind() {
         assertThat("bb").isEqualTo(StreamEx.of("a", "bb", "c").findFirst(s -> s.length() == 2).get());
-        assertThat(StreamEx.of("a", "bb", "c").findFirst(s -> s.length() == 3).isPresent()).isTrue();
+        assertThat(StreamEx.of("a", "bb", "c").findFirst(s -> s.length() == 3).isPresent()).isFalse();
     }
 
     @Test
