@@ -293,4 +293,19 @@ public class StreamexTest {
         assertTrue(StreamEx.of("a", "bb", null, "c").has(null));
     }
 
+    @Test
+    public void testWithout() {
+        assertThat(asList("a", "bb", null)).isEqualTo(StreamEx.of("a", "bb", null, "c").without("c").toList());
+        String s = null;
+        assertThat(asList("a", "bb", "c")).isEqualTo(StreamEx.of("a", "bb", null, "c", null).without(s).toList());
+        assertThat(StreamEx.of("bb", "bb", "bb").without("bb").toList().isEmpty()).isTrue();
+        assertThat(asList("bb", "bb", "bb")).isEqualTo(StreamEx.of("bb", "bb", "bb").without(s).toList());
+
+        StreamEx<String> stream = StreamEx.of("a", "b", "c");
+        assertSame(stream, stream.without());
+        assertThat(asList("a", "b", "c")).isEqualTo(StreamEx.of("a", "b", null, "c").without(new String[] { null }).toList());
+        assertThat(asList()).isEqualTo(StreamEx.of("a", "b", null, "c").without("c", null, "b", "a").toList());
+    }
+
+
 }
