@@ -7,9 +7,6 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -307,5 +304,11 @@ public class StreamexTest {
         assertThat(asList()).isEqualTo(StreamEx.of("a", "b", null, "c").without("c", null, "b", "a").toList());
     }
 
+    @Test
+    public void testJoining() {
+        assertEquals("abc", StreamEx.of("a", "b", "c").joining());
+        assertEquals("a,b,c", StreamEx.of("a", "b", "c").joining(","));
+        assertEquals("[1;2;3]", StreamEx.of(1, 2, 3).joining(";", "[", "]"));
+    }
 
 }
